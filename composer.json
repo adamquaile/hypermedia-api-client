@@ -1,7 +1,14 @@
 {
     "name": "adamquaile/hypermedia-api-client",
     "type": "library",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/adamquaile/mock-client"
+        }
+    ],
     "require": {
+        "ext-json": "*",
         "php-http/httplug": "^1.1",
         "guzzlehttp/guzzle": "^6.3",
         "php-http/message-factory": "^1.0",
@@ -14,6 +21,11 @@
             "AdamQuaile\\HypermediaApiClient\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "AdamQuaile\\HypermediaApiClient\\Tests\\": "tests/"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
@@ -23,6 +35,6 @@
     ],
     "require-dev": {
         "phpunit/phpunit": "^7.4",
-        "php-http/mock-client": "^1.1"
+        "php-http/mock-client": "dev-conditional-mocks"
     }
 }

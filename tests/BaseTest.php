@@ -40,6 +40,7 @@ abstract class BaseTest extends TestCase
     {
         $this->messageFactory = new GuzzleMessageFactory();
         $this->streamFactory = new GuzzleStreamFactory();
+        $this->httpMock = new MockClient();
         $this->httpMock = new Client();
         $this->sut = new ApiClient(
             [

@@ -8,6 +8,6 @@ class ResourceIterationNotDefined extends \RuntimeException
 {
     public function __construct(Resource $resource)
     {
-        parent::__construct("Resource cannot be iterated because no plugins registered an iterator");
+        parent::__construct("Resource $resource cannot be iterated because no plugins registered an iterator");
     }
 }

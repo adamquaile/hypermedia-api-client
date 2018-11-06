@@ -13,10 +13,12 @@ class ServiceContainer
 
     public function findInstancesOf(string $classOrInterface)
     {
+        $instances = [];
         foreach ($this->services as $service) {
             if ($service instanceof $classOrInterface) {
-                yield $service;
+                $instances[] = $service;
             }
         }
+        return $instances;
     }
 }

@@ -36,6 +36,18 @@ class Resource implements \IteratorAggregate
         $this->links = $links;
     }
 
+    public function __call(string $key, array $arguments)
+    {
+        if (isset($this->data->$key)) {
+            return $this->data->$key;
+        }
+        if (isset($this->links->$key)) {
+            return $this->followLink($key);
+        }
+
+        throw new \InvalidArgumentException("No such key $key");
+    }
+
     public function getData(): DataSet
     {
         return $this->data;
@@ -51,6 +63,12 @@ class Resource implements \IteratorAggregate
         return $this->client->loadFromUri($this->links->$name->getUri());
     }
 
+    public function map(callable $mapFunction)
+    {
+        foreach ($this->getIterator() as $resource) {
+            yield $mapFunction($resource);
+        }
+    }
 
     public function setIterator(\Iterator $iterator)
     {
@@ -64,5 +82,10 @@ class Resource implements \IteratorAggregate
         }
 
         return $this->iterator;
+    }
+
+    public function __toString()
+    {
+        return $this->uri;
     }
 }

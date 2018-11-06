@@ -14,10 +14,10 @@ class IterationExtension implements Extension
 {
     public function initialise(ApiClient $client, EventDispatcher $eventDispatcher, ServiceContainer $container)
     {
-        $iterationStrategies = $container->findInstancesOf(IterationStrategy::class);
         $eventDispatcher->register(
             HttpEvents::FINALISE_RESOURCE,
-            function (FinaliseResourceEvent $event) use ($iterationStrategies) {
+            function (FinaliseResourceEvent $event) use ($container) {
+                $iterationStrategies = $container->findInstancesOf(IterationStrategy::class);
                 foreach ($iterationStrategies as $strategy) {
 
                     $request    = $event->getRequest();

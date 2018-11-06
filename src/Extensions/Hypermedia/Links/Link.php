@@ -16,7 +16,7 @@ class Link
     public function __construct(string $uri, string $name)
     {
         $this->uri = $uri;
-        $this->name = $name;
+        $this->name = preg_replace('/\.self/', '', $name);
     }
 
     public function getName(): string

@@ -26,11 +26,18 @@ class JsonExtension implements Extension
             return;
         }
 
-        if (0 !== stripos($response->getHeaderLine('Content-type'), 'application/json')) {
+        if (false === stripos($response->getHeaderLine('Content-type'), 'json')) {
             return;
         }
 
-        $streamContents = $event->getResponseStream()->getContents();
-        $event->getData()->set('deserialised', json_decode($streamContents));
+        $stream = $event->getResponseStream();
+        $stream->isReadable();
+        $stream->rewind();
+        $streamContents = $stream->getContents();
+        $decoded = \json_decode($streamContents);
+        if (JSON_ERROR_NONE !== \json_last_error()) {
+            throw new \LogicException("Resource treated as JSON, but got syntax error: " . \json_last_error_msg());
+        }
+        $event->getData()->set('deserialised', $decoded);
     }
 }
