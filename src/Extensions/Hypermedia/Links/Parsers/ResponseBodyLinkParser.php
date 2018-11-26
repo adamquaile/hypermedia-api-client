@@ -2,7 +2,7 @@
 
 namespace AdamQuaile\HypermediaApiClient\Extensions\Hypermedia\Links\Parsers;
 
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
+use AdamQuaile\HypermediaApiClient\Model\AttributeBag;
 use AdamQuaile\HypermediaApiClient\Parsing\PathTraverser;
 use AdamQuaile\HypermediaApiClient\Extensions\Hypermedia\Links\Link;
 use AdamQuaile\HypermediaApiClient\Extensions\Hypermedia\Links\LinkParser;
@@ -33,7 +33,7 @@ class ResponseBodyLinkParser implements LinkParser
     /**
      * @return Link[]
      */
-    public function parseLinks(ResponseInterface $response, DataSet $dataSet): \Traversable
+    public function parseLinks(ResponseInterface $response, AttributeBag $dataSet): \Traversable
     {
         $yieldWholePath = ($this->namePathOrMode === 2);
 

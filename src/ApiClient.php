@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace AdamQuaile\HypermediaApiClient;
 
+use AdamQuaile\HypermediaApiClient\Extensions\Auth\AuthExtension;
+use AdamQuaile\HypermediaApiClient\Extensions\Deserialisation\DeserialisationExtension;
 use AdamQuaile\HypermediaApiClient\Extensions\Extension;
+use AdamQuaile\HypermediaApiClient\Extensions\Hypermedia\HypermediaExtension;
+use AdamQuaile\HypermediaApiClient\Extensions\Iteration\IterationExtension;
+use AdamQuaile\HypermediaApiClient\Extensions\Json\JsonExtension;
+use AdamQuaile\HypermediaApiClient\Extensions\GraphBuilding\GraphBuildingExtension;
 use AdamQuaile\HypermediaApiClient\Protocols\Http\HttpProtocol;
 use AdamQuaile\HypermediaApiClient\Exceptions\MalformedUriException;
 use AdamQuaile\HypermediaApiClient\Exceptions\UnsupportedProtocolException;
@@ -28,11 +34,23 @@ class ApiClient
     private $protocols;
     private $container;
 
-    public function __construct(array $protocols, EventDispatcher $eventDispatcher)
+    public function __construct(array $protocols, EventDispatcher $eventDispatcher, array $plugins = [])
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->protocols = $protocols;
         $this->container = new ServiceContainer();
+
+        if (empty($plugins)) {
+            $plugins = [
+                new AuthExtension(),
+                new DeserialisationExtension(),
+                new GraphBuildingExtension(),
+                new HypermediaExtension(),
+                new IterationExtension(),
+                new JsonExtension(),
+            ];
+        }
+        $this->pluginsToInitialise = $plugins;
     }
 
     public function loadFromUri(string $uri)
@@ -40,6 +58,7 @@ class ApiClient
         while (!empty($this->pluginsToInitialise)) {
             $plugin = array_shift($this->pluginsToInitialise);
             $plugin->initialise($this, $this->eventDispatcher, $this->container);
+            $this->container->track($plugin);
         }
         if (false === $protocolStringLength = strpos($uri, '://')) {
             throw new MalformedUriException($uri);

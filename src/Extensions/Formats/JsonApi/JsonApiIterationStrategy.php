@@ -24,7 +24,7 @@ class JsonApiIterationStrategy implements IterationStrategy
         return new ResourceIterator(
             $resource,
             function(Resource $resource) {
-                return $resource->getData()->get('deserialised')->data;
+                return $resource->getGraph();
             }
         );
     }

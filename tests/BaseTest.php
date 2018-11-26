@@ -19,7 +19,7 @@ abstract class BaseTest extends TestCase
     /**
      * @var ApiClient
      */
-    protected $sut;
+    protected $api;
 
     /**
      * @var Client
@@ -42,7 +42,7 @@ abstract class BaseTest extends TestCase
         $this->streamFactory = new GuzzleStreamFactory();
         $this->httpMock = new MockClient();
         $this->httpMock = new Client();
-        $this->sut = new ApiClient(
+        $this->api = new ApiClient(
             [
                 new HttpProtocol(
                     $this->httpMock,

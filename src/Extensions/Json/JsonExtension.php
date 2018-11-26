@@ -30,14 +30,10 @@ class JsonExtension implements Extension
             return;
         }
 
-        $stream = $event->getResponseStream();
-        $stream->isReadable();
-        $stream->rewind();
-        $streamContents = $stream->getContents();
-        $decoded = \json_decode($streamContents);
+        $decoded = \json_decode($event->getAttributes()->get('raw'));
         if (JSON_ERROR_NONE !== \json_last_error()) {
             throw new \LogicException("Resource treated as JSON, but got syntax error: " . \json_last_error_msg());
         }
-        $event->getData()->set('deserialised', $decoded);
+        $event->getAttributes()->set('deserialised', $decoded);
     }
 }

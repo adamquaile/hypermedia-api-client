@@ -16,14 +16,10 @@ class BuildGraphFromHypermediaLinksUserCaseTest extends BaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->sut->addExtension(new DeserialisationExtension());
-        $this->sut->addExtension(new IterationExtension());
-        $this->sut->addExtension(new JsonExtension());
-        $this->sut->addExtension(new HypermediaExtension());
-        $this->sut->addExtension(new JsonApiExtension());
+        $this->api->addExtension(new JsonApiExtension());
     }
 
-    public function test_following_links_multiple_times()
+    public function test_following_multiple_links()
     {
         $this->httpMock->on(
             new RequestMatcher('/books/1984$', null, 'GET'),
@@ -143,31 +139,14 @@ class BuildGraphFromHypermediaLinksUserCaseTest extends BaseTest
                 ))
         );
 
-        // This is currently possible...
         $this->assertEquals(
             ['1984', 'Animal Farm'],
             iterator_to_array(
-                $this->sut->loadFromUri('https://api.bookstore.example.com/books/1984')
+                $this->api->loadFromUri('https://api.bookstore.example.com/books/1984')
                     ->author()
                     ->booksWritten()
                     ->map(
                         function($book) {
-                            return $book->attributes->title;
-                        }
-                    )
-            )
-        );
-        return;
-
-        // ...this is ideal, parsing objects from resources
-        $this->assertEquals(
-            ['1984', 'Animal Farm'],
-            iterator_to_array(
-                $this->sut->loadFromUri('https://api.bookstore.example.com/books/1984')
-                    ->author()
-                    ->booksWritten()
-                    ->map(
-                        function(Resource $book) {
                             return $book->title;
                         }
                     )

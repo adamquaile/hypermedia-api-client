@@ -2,7 +2,7 @@
 
 namespace AdamQuaile\HypermediaApiClient\Extensions\Auth\Events;
 
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
+use AdamQuaile\HypermediaApiClient\Model\AttributeBag;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -17,11 +17,11 @@ class UnauthorisedEvent
      */
     private $response;
     /**
-     * @var DataSet
+     * @var AttributeBag
      */
     private $dataSet;
 
-    public function __construct(RequestInterface $request, ResponseInterface $response, DataSet $dataSet)
+    public function __construct(RequestInterface $request, ResponseInterface $response, AttributeBag $dataSet)
     {
         $this->request = $request;
         $this->response = $response;

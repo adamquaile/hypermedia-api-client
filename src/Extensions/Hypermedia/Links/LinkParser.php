@@ -2,7 +2,7 @@
 
 namespace AdamQuaile\HypermediaApiClient\Extensions\Hypermedia\Links;
 
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
+use AdamQuaile\HypermediaApiClient\Model\AttributeBag;
 use Psr\Http\Message\ResponseInterface;
 
 interface LinkParser
@@ -10,5 +10,5 @@ interface LinkParser
     /**
      * @return Link[]
      */
-    public function parseLinks(ResponseInterface $response, DataSet $dataSet): \Traversable;
+    public function parseLinks(ResponseInterface $response, AttributeBag $dataSet): \Traversable;
 }

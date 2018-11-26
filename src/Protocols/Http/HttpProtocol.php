@@ -3,12 +3,13 @@
 namespace AdamQuaile\HypermediaApiClient\Protocols\Http;
 
 use AdamQuaile\HypermediaApiClient\ApiClient;
+use AdamQuaile\HypermediaApiClient\Model\Graph;
 use AdamQuaile\HypermediaApiClient\Protocols\Protocol;
 use AdamQuaile\HypermediaApiClient\Protocols\Http\Events\FinaliseResourceEvent;
 use AdamQuaile\HypermediaApiClient\Protocols\Http\Events\HttpEvents;
 use AdamQuaile\HypermediaApiClient\Protocols\Http\Events\PrepareRequestEvent;
 use AdamQuaile\HypermediaApiClient\Protocols\Http\Events\ProcessResponseEvent;
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
+use AdamQuaile\HypermediaApiClient\Model\AttributeBag;
 use AdamQuaile\HypermediaApiClient\EventDispatcher;
 use AdamQuaile\HypermediaApiClient\Model\Resource;
 use Http\Client\HttpAsyncClient;
@@ -50,16 +51,14 @@ class HttpProtocol implements Protocol
         $promise = $this->client->sendAsyncRequest($request);
         $response = $promise->wait();
 
-        $data = new DataSet();
-        $links = [];
+        $attributes = new AttributeBag();
+        $attributes->set('raw', $response->getBody());
 
-        $processResponseEvent = new ProcessResponseEvent($request, $response, $data, $links);
+        $processResponseEvent = new ProcessResponseEvent($request, $response, $attributes, new Graph());
         $eventDispatcher->dispatch(HttpEvents::PROCESS_RESPONSE, $processResponseEvent);
 
-        $data = $processResponseEvent->getData();
-        $links = $processResponseEvent->getLinks();
+        $resource = new Resource($client, $uri, $processResponseEvent->getAttributeBag(), $processResponseEvent->getGraph());
 
-        $resource = new Resource($client, $uri, $data, $links);
         $finaliseResourceEvent = new FinaliseResourceEvent($request, $response, $resource);
         $eventDispatcher->dispatch(HttpEvents::FINALISE_RESOURCE, $finaliseResourceEvent);
 

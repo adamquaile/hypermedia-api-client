@@ -28,12 +28,7 @@ class IterationUseCaseTest extends BaseTest
     {
         parent::setUp();
 
-        $this->sut->addExtension(new DeserialisationExtension());
-        $this->sut->addExtension(new JsonExtension());
-        $this->sut->addExtension(new HypermediaExtension());
-        $this->sut->addExtension(new IterationExtension());
-
-        $this->sut->getServiceContainer()->track(
+        $this->api->getServiceContainer()->track(
             new ResponseBodyLinkParser(
                 new JsonPathTraverser('$.links.pages'),
                 new JsonPathTraverser('$.'),
@@ -41,7 +36,7 @@ class IterationUseCaseTest extends BaseTest
             )
         );
 
-        $this->sut->getServiceContainer()->track(new PaginatedResourceIterationStrategy());
+        $this->api->getServiceContainer()->track(new PaginatedResourceIterationStrategy());
     }
 
 
@@ -121,8 +116,6 @@ JSON;
 }
 JSON;
 
-
-
         $initialPageResponse = $this->messageFactory
             ->createResponse(200)
             ->withHeader('Content-type', 'application/json')
@@ -133,7 +126,7 @@ JSON;
             ->withBody($this->streamFactory->createStream($secondPageResponseBody));
         $this->httpMock->addResponse($initialPageResponse);
         $this->httpMock->addResponse($secondPageResponse);
-        $images = $this->sut->loadFromUri('https://api.digitalocean.com/v2/images');
+        $images = $this->api->loadFromUri('https://api.digitalocean.com/v2/images');
 
         $names = [];
         foreach ($images as $image) {

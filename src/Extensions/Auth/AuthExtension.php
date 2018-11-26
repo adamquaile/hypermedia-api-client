@@ -30,7 +30,7 @@ class AuthExtension implements Extension
 
         if ($response->getStatusCode() === 401) {
 
-            $unauthorisedEvent = new UnauthorisedEvent($event->getRequest(), $event->getResponse(), $event->getData());
+            $unauthorisedEvent = new UnauthorisedEvent($event->getRequest(), $event->getResponse(), $event->getAttributeBag());
             $this->dispatcher->dispatch(self::UNAUTHORISED, $unauthorisedEvent);
         }
     }

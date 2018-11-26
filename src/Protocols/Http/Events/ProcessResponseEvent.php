@@ -2,7 +2,8 @@
 
 namespace AdamQuaile\HypermediaApiClient\Protocols\Http\Events;
 
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
+use AdamQuaile\HypermediaApiClient\Model\AttributeBag;
+use AdamQuaile\HypermediaApiClient\Model\Graph;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -13,24 +14,24 @@ class ProcessResponseEvent
      */
     private $response;
     /**
-     * @var DataSet
+     * @var AttributeBag
      */
     private $data;
     /**
-     * @var array
+     * @var Graph
      */
-    private $links;
+    private $graph;
     /**
      * @var RequestInterface
      */
     private $request;
 
-    public function __construct(RequestInterface $request, ResponseInterface $response, DataSet $data, $links)
+    public function __construct(RequestInterface $request, ResponseInterface $response, AttributeBag $data, Graph $graph)
     {
         $this->request = $request;
         $this->response = $response;
         $this->data = $data;
-        $this->links = $links;
+        $this->graph = $graph;
     }
 
     /**
@@ -58,9 +59,9 @@ class ProcessResponseEvent
     }
 
     /**
-     * @return DataSet
+     * @return AttributeBag
      */
-    public function getData(): DataSet
+    public function getAttributeBag(): AttributeBag
     {
         return $this->data;
     }
@@ -70,13 +71,13 @@ class ProcessResponseEvent
         $this->data = $data;
     }
 
-    public function getLinks()
+    public function getGraph(): Graph
     {
-        return $this->links;
+        return $this->graph;
     }
 
-    public function setLinks($links): void
+    public function setGraph(Graph $graph): void
     {
-        $this->links = $links;
+        $this->graph = $graph;
     }
 }

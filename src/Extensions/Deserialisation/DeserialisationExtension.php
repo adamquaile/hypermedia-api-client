@@ -34,7 +34,7 @@ class DeserialisationExtension implements Extension
         $response   = $processResponseEvent->getResponse();
         $body       = $response->getBody();
 
-        $deserialiseEvent = new DeserialiseResponseBodyEvent($response, $body, $processResponseEvent->getData());
+        $deserialiseEvent = new DeserialiseResponseBodyEvent($response, $body, $processResponseEvent->getAttributeBag());
         $this->dispatcher->dispatch(self::DESERIALISE, $deserialiseEvent);
     }
 }

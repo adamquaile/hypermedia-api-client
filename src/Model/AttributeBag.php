@@ -2,16 +2,16 @@
 
 namespace AdamQuaile\HypermediaApiClient\Model;
 
-class DataSet
+class AttributeBag
 {
     /**
      * @var array
      */
-    private $data;
+    private $data = [];
 
     public function __construct()
     {
-        $a = 1;
+
     }
 
     public function set(string $key, $data)

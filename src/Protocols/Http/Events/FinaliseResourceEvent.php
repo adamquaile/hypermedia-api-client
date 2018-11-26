@@ -2,7 +2,7 @@
 
 namespace AdamQuaile\HypermediaApiClient\Protocols\Http\Events;
 
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
+use AdamQuaile\HypermediaApiClient\Model\AttributeBag;
 use AdamQuaile\HypermediaApiClient\Model\Resource;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

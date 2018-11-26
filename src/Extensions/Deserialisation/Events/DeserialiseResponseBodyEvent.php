@@ -2,7 +2,7 @@
 
 namespace AdamQuaile\HypermediaApiClient\Extensions\Deserialisation\Events;
 
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
+use AdamQuaile\HypermediaApiClient\Model\AttributeBag;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -17,15 +17,15 @@ class DeserialiseResponseBodyEvent
      */
     private $responseStream;
     /**
-     * @var DataSet
+     * @var AttributeBag
      */
-    private $data;
+    private $attributes;
 
-    public function __construct(ResponseInterface $response, StreamInterface $responseStream, DataSet $data)
+    public function __construct(ResponseInterface $response, StreamInterface $responseStream, AttributeBag $data)
     {
         $this->response = $response;
         $this->responseStream = $responseStream;
-        $this->data = $data;
+        $this->attributes = $data;
     }
 
     public function getResponse(): ResponseInterface
@@ -38,8 +38,8 @@ class DeserialiseResponseBodyEvent
         return $this->responseStream;
     }
 
-    public function getData(): DataSet
+    public function getAttributes(): AttributeBag
     {
-        return $this->data;
+        return $this->attributes;
     }
 }

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace AdamQuaile\HypermediaApiClient\Model;
 
 use AdamQuaile\HypermediaApiClient\ApiClient;
-use AdamQuaile\HypermediaApiClient\Protocols\Protocol;
 use AdamQuaile\HypermediaApiClient\Exceptions\ResourceIterationNotDefined;
-use AdamQuaile\HypermediaApiClient\Model\DataSet;
-use Traversable;
+use AdamQuaile\HypermediaApiClient\Extensions\Hypermedia\Links\Link;
 
 class Resource implements \IteratorAggregate
 {
@@ -21,46 +19,48 @@ class Resource implements \IteratorAggregate
      */
     private $uri;
     private $data;
-    private $links;
+    private $graph;
 
     /**
      * @var ?\Iterator
      */
     private $iterator;
 
-    public function __construct(ApiClient $client, string $uri, DataSet $data, $links)
+    public function __construct(ApiClient $client, string $uri, AttributeBag $data, Graph $graph)
     {
         $this->client = $client;
         $this->uri = $uri;
         $this->data = $data;
-        $this->links = $links;
+        $this->graph = $graph;
     }
 
-    public function __call(string $key, array $arguments)
-    {
-        if (isset($this->data->$key)) {
-            return $this->data->$key;
-        }
-        if (isset($this->links->$key)) {
-            return $this->followLink($key);
-        }
-
-        throw new \InvalidArgumentException("No such key $key");
-    }
-
-    public function getData(): DataSet
+    public function getData(): AttributeBag
     {
         return $this->data;
     }
 
+    public function setGraph(Graph $graph): void
+    {
+        $this->graph = $graph;
+    }
+
+    public function getGraph(): Graph
+    {
+        return $this->graph;
+    }
+
     public function hasLink(string $name)
     {
-        return isset($this->links->$name);
+        return $this->graph->hasEdge($name) && $this->graph->getEdge($name) instanceof Link;
     }
 
     public function followLink(string $name)
     {
-        return $this->client->loadFromUri($this->links->$name->getUri());
+        if (!$this->hasLink($name)) {
+            throw new \LogicException("No such link $name");
+        }
+
+        return $this->client->loadFromUri($this->graph->getEdge($name)->getUri());
     }
 
     public function map(callable $mapFunction)
@@ -68,6 +68,20 @@ class Resource implements \IteratorAggregate
         foreach ($this->getIterator() as $resource) {
             yield $mapFunction($resource);
         }
+    }
+
+    public function __call(string $key, array $arguments)
+    {
+        if ($this->graph->hasEdge($key)) {
+            $node = $this->graph->getEdge($key);
+            if ($node instanceof Link) {
+                return $this->client->loadFromUri($node->getUri());
+            }
+
+            return $node;
+        }
+
+        throw new \InvalidArgumentException("No such key $key");
     }
 
     public function setIterator(\Iterator $iterator)
