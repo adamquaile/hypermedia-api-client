@@ -41,7 +41,7 @@ class MockClient implements HttpClient, HttpAsyncClient
      * @throws \Http\Client\Exception If an error happens during processing the request.
      * @throws \Exception             If processing the request is impossible (eg. bad configuration).
      */
-    public function sendRequest(RequestInterface $request)
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
         foreach ($this->conditionalResponses as ['matcher' => $matcher, 'result' => $result]) {
             /**
